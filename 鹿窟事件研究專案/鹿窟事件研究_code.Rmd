@@ -1,25 +1,12 @@
 ---
-title: "鹿窟事件資料分析"
+title: "鹿窟事件身份年齡與其刑期之關係"
 subtitle: "運用ggplo2來繪製"
 author: "Jerry Yang，楊宗政"
-date: "2021/7/30"
-output:
-  tufte::tufte_html: default
-  tufte::tufte_book:
-    citation_package: natbib
-    latex_engine: xelatex
-  tufte::tufte_handout:
-    citation_package: natbib
-    latex_engine: xelatex
-ctex: yes
-biblio-title: 参考文献
-bibliography: skeleton.bib
-link-citations: yes
+output: github_document
 ---
 
-```{r setup, include=FALSE}
-library(tufte)
-knitr::opts_chunk$set(cache.extra = packageVersion('tufte'))
+```{r setup, echo=T, eval=T , warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 options(htmltools.dir.version = FALSE)
 library(sjlabelled)
 library(sjmisc)
@@ -30,7 +17,7 @@ sjPlot::set_theme(theme.font="PingFang TC") #解決底下有框框問題
 luku_df<- read_excel("~/Documents/2021TextbookProject/luku.xlsx")
 ```
 
-# 先讀入x鹿窟事件調查資料   
+# 先讀入鹿窟事件調查資料   
 檔案形式為excel檔
 
 ## 讀入excel檔  
@@ -82,14 +69,14 @@ luku_df$刑期[luku_df$刑期 == "交付感化3年（未滿14歲）"] <- "交付
 
 ```{r 年齡與刑期1, fig.cap = "不同職業下年齡與刑期之差異_1。", echo=T, eval=T,warning=FALSE, message=FALSE}
 ggplot(luku_df, aes(x = 刑期, y = 被訴年齡, colour = 被捕時身份))+
-  geom_point()+geom_smooth() + theme(panel.background = element_rect(colour = "purple", fill = "pink", size = 3, linetype = "dashed"))
+  geom_point()+geom_smooth() + theme(panel.background = element_rect(colour = "purple", fill = "pink", size = 3, linetype = "dashed"))+ theme(text = element_text(family = "黑體-繁 中黑", size = 9.5))
 ```
 
 
 ```{r 年齡與刑期2, fig.cap = "不同職業下年齡與刑期之差異_2。", echo=T, eval=T, message=FALSE, warning=FALSE}
 ggplot(data = luku_df, aes(x = 刑期, y = 被訴年齡, 
                       color = 被捕時身份, shape = 被捕時身份)) + 
-  geom_jitter(alpha = 1/2, size = 4) + geom_smooth(method = "lm", se = FALSE) + theme(plot.background = element_rect(colour = "purple", fill = "pink", size = 3, linetype = "dashed"))
+  geom_jitter(alpha = 1/2, size = 4) + geom_smooth(method = "lm", se = FALSE) + theme(plot.background = element_rect(colour = "purple", fill = "pink", size = 3, linetype = "dashed"))+ theme(text = element_text(family = "黑體-繁 中黑", size = 9.5))
 
 ```
 
