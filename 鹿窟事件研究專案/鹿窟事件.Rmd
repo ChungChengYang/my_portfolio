@@ -1,0 +1,95 @@
+---
+title: "鹿窟事件資料分析"
+subtitle: "運用ggplo2來繪製"
+author: "Jerry Yang，楊宗政"
+date: "2021/7/30"
+output:
+  tufte::tufte_html: default
+  tufte::tufte_book:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+ctex: yes
+biblio-title: 参考文献
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+library(tufte)
+knitr::opts_chunk$set(cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+library(sjlabelled)
+library(sjmisc)
+library(sjPlot)
+library(readxl)
+library(ggplot2)
+sjPlot::set_theme(theme.font="PingFang TC") #解決底下有框框問題
+luku_df<- read_excel("~/Documents/2021TextbookProject/luku.xlsx")
+```
+
+# 先讀入x鹿窟事件調查資料   
+檔案形式為excel檔
+
+## 讀入excel檔  
+問卷資料用luku_df來存放
+```{r excel, echo=T, eval=T , warning=FALSE}
+nrow(luku_df)
+names(luku_df)
+class(luku_df)
+which(colnames(luku_df) == "刑度/刑期")
+names(luku_df)[5] <- "刑期"
+class(luku_df$被捕時身份)
+```
+
+## 將變數名稱修改,並重新命名變數
+```{r 重新命名變數, echo=T, eval=T , warning=FALSE}
+luku_df$被捕時身份[luku_df$被捕時身份 == "印刷工"] <- "農工"
+
+luku_df$被捕時身份[luku_df$被捕時身份 == "工"] <- "農工"
+luku_df$被捕時身份[luku_df$被捕時身份 == "礦工"] <- "農工"
+luku_df$被捕時身份[luku_df$被捕時身份 == "礦工、農、木工"] <- "農工"
+luku_df$被捕時身份[luku_df$被捕時身份 == "礦工、農"] <- "農工"
+
+
+luku_df$被捕時身份[luku_df$被捕時身份 == "商"] <- "商"
+luku_df$被捕時身份[luku_df$被捕時身份 == "會計"] <- "商"
+
+
+luku_df$被捕時身份[luku_df$被捕時身份 == "技工"] <- "公務員"
+luku_df$被捕時身份[luku_df$被捕時身份 == "公務人員"] <- "公務員"
+
+luku_df$被捕時身份[luku_df$被捕時身份 == "家務"] <- "無業"
+luku_df$被捕時身份[luku_df$被捕時身份 == "兒童"] <- "無業"
+luku_df$被捕時身份[luku_df$被捕時身份 == "學生"] <- "無業"
+luku_df$被捕時身份[luku_df$被捕時身份 == "無"] <- "無業"
+
+luku_df$被捕時身份[luku_df$被捕時身份 == "農"] <- "農工"
+
+
+luku_df$刑期[luku_df$刑期 == "自首"] <- "無"
+luku_df$刑期[luku_df$刑期 == "感訓"] <- "無"
+luku_df$刑期[luku_df$刑期 == "自新"] <- "無"
+luku_df$刑期[luku_df$刑期 == "逮捕時當場擊斃(民國42年1月12日)"] <- "無"
+luku_df$刑期[luku_df$刑期 == "死(逮捕時困斃)"] <- "無"
+luku_df$刑期[luku_df$刑期 == "在山上被蛇咬死"] <- "無"
+
+luku_df$刑期[luku_df$刑期 == "交付感化3年（未滿14歲）"] <- "交付感化3年"
+
+```
+
+```{r 年齡與刑期1, fig.cap = "不同職業下年齡與刑期之差異_1。", echo=T, eval=T,warning=FALSE, message=FALSE}
+ggplot(luku_df, aes(x = 刑期, y = 被訴年齡, colour = 被捕時身份))+
+  geom_point()+geom_smooth() + theme(panel.background = element_rect(colour = "purple", fill = "pink", size = 3, linetype = "dashed"))
+```
+
+
+```{r 年齡與刑期2, fig.cap = "不同職業下年齡與刑期之差異_2。", echo=T, eval=T, message=FALSE, warning=FALSE}
+ggplot(data = luku_df, aes(x = 刑期, y = 被訴年齡, 
+                      color = 被捕時身份, shape = 被捕時身份)) + 
+  geom_jitter(alpha = 1/2, size = 4) + geom_smooth(method = "lm", se = FALSE) + theme(plot.background = element_rect(colour = "purple", fill = "pink", size = 3, linetype = "dashed"))
+
+```
+
