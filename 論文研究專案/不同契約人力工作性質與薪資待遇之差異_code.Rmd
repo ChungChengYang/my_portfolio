@@ -8,6 +8,7 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 options(htmltools.dir.version = FALSE)
 sjPlot::set_theme(theme.font="PingFang TC") #解決底下有框框問題
+library(haven)
 library(ggplot2)
 library(sjlabelled)
 library(sjmisc)
