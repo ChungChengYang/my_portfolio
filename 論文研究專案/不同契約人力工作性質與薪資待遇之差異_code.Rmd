@@ -8,7 +8,6 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 options(htmltools.dir.version = FALSE)
 sjPlot::set_theme(theme.font="PingFang TC") #解決底下有框框問題
-library(haven)
 library(ggplot2)
 library(sjlabelled)
 library(sjmisc)
@@ -93,6 +92,7 @@ names(contract_staff)[80] <- "工作年資區間"
 ```
 
 ```{r 工作年資與學歷, fig.cap = "工作年資與學歷的差異。", warning=FALSE, cache=TRUE, message=FALSE}
+contract_staff$學歷 <- factor(contract_staff$學歷, c("高中高職或以下", "專科", "大學", "碩士以上"))#由於長條圖不會自己排序資料，因此轉換成factor格式，再根據自己定義的順序排序。
 ggplot(contract_staff, aes(x = 工作年資區間, fill = 學歷)) + 
   geom_bar(position = "dodge") + facet_wrap(~契約人力)+ theme(strip.text.x = element_text(size = 12)) + labs(y = "次數", size = 10) + geom_text(stat = "count", aes(label = ( ..count..)), vjust = 1, color = I("black"), size = 4) + theme(text = element_text(family = "黑體-繁 中黑", size = 7))
 ```
@@ -147,6 +147,7 @@ GGally::ggpairs(data = constract.df,
 
 
 ```{r 月薪資與學歷的差異, fig.cap = "月薪資與學歷在不同工作性質及契約人力下的差異。", warning=FALSE, cache=TRUE, message=FALSE}
+contract_staff$學歷 <- factor(contract_staff$學歷, c("高中高職或以下", "專科", "大學", "碩士以上"))
 ggplot(data = contract_staff, aes(x = 月薪資區間, y =  學歷)) + labs(x = "月薪資", y = "學歷", title = "月薪資與學歷之差異") + geom_jitter() + facet_grid(工作性質 ~ 契約人力) + theme(strip.text.x = element_text(size = 12) ) +  theme(strip.text.y = element_text(size = 10) ) + theme(plot.title = element_text(size = 10, face = "bold", color = "black"), axis.title = element_text(size = 12)) + theme(text = element_text(family = "黑體-繁 中黑", size = 9))
 
 
